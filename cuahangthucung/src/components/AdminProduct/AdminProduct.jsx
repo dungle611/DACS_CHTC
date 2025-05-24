@@ -65,6 +65,13 @@ const AdminProduct = () => {
             return res
         }
     )
+    const mutationDeleteMany = useMutationHook(
+        (data) => {
+            const { token, ...ids } = data
+            const res = ProductService.deleteManyProduct(ids, token)
+            return res
+        }
+    )
     const getAllProduct = async () => {
         const res = await ProductService.getAllProduct()
         return res
@@ -88,17 +95,26 @@ const AdminProduct = () => {
         form.setFieldsValue(stateProductDetails)
     }, [form, stateProductDetails])
     useEffect(() => {
-        if (rowSelected) {
+        if (rowSelected && isOpenDrawer) {
             setIsLoadingUpdate(true)
             fetchGetDetailsProduct(rowSelected)
         }
-    }, [rowSelected])
+    }, [rowSelected, isOpenDrawer])
     const handleDetailsProduct = () => {
         setIsOpenDrawer(true)
+    }
+    const handleDeleteManyProduct = (ids) => {
+        mutationDeleteMany.mutate({ids: ids, token: user?.access_token}, {
+            onSettled: () => {
+                queryProduct.refetch()
+            }
+        })
     }
     const { data, isLoading, isSuccess, isError } = mutation
     const { data: dataUpdated, isLoading: isLoadingUpdated, isSuccess: isSuccessUpdated, isError: isErrorUpdated } = mutationUpdate
     const { data: dataDeleted, isLoading: isLoadingDeleted, isSuccess: isSuccessDeleted, isError: isErrorDeleted } = mutationDelete
+    const { data: dataDeletedMany, isLoading: isLoadingDeletedMany, isSuccess: isSuccessDeletedMany, isError: isErrorDeletedMany } = mutationDeleteMany
+
     const queryProduct = useQuery({ queryKey: ['products'], queryFn: getAllProduct })
     const { isLoading: isLoadingProduct, data: products } = queryProduct
     const renderAction = () => {
@@ -285,6 +301,13 @@ const AdminProduct = () => {
             message.error()
         }
     }, [isSuccessDeleted])
+    useEffect(() => {
+        if (isSuccessDeletedMany && dataDeletedMany?.status === 'OK') {
+            message.success()
+        } else if (isErrorDeletedMany) {
+            message.error()
+        }
+    }, [isSuccessDeletedMany])
     const handleCancelDelete = () => {
         setIsModalOpenDelete(false)
     }
@@ -361,7 +384,7 @@ const AdminProduct = () => {
                 <Button style={{ height: '150px', width: '150px', borderRadius: '6px', borderStyle: 'dashed' }} onClick={() => setIsModalOpen(true)}><PlusOutlined style={{ fontSize: '60px' }}></PlusOutlined></Button>
             </div>
             <div style={{ marginTop: '20px' }}>
-                <TableComponent columns={columns} isLoading={isLoadingProduct} data={dataTable} onRow={(record, rowIndex) => {
+                <TableComponent handleDeleteMany={handleDeleteManyProduct} columns={columns} isLoading={isLoadingProduct} data={dataTable} onRow={(record, rowIndex) => {
                     return {
                         onClick: event => {
                             setRowSelected(record._id)
@@ -369,7 +392,7 @@ const AdminProduct = () => {
                     };
                 }} />
             </div>
-            <ModalComponent title="Tạo sản phẩm" open={isModalOpen} onCancel={handleCancel} footer={null}>
+            <ModalComponent forceRender title="Tạo sản phẩm" open={isModalOpen} onCancel={handleCancel} footer={null}>
                 {/* <Loading isLoading={isLoading}> */}
                 <Form
                     name="basic"
@@ -469,7 +492,7 @@ const AdminProduct = () => {
                         name="type"
                         rules={[{ required: true, message: 'Please input your type' }]}
                     >
-                        <InputComponent value={stateProductDetails.type} onChange={handleOnChangeDetails} name="type" />
+                        <InputComponent value={stateProductDetails['type']} onChange={handleOnChangeDetails} name="type" />
                     </Form.Item>
                     <Form.Item
                         label="Count inStock"
@@ -525,7 +548,7 @@ const AdminProduct = () => {
                 </Form>
                 {/* </Loading> */}
             </DrawerComponent>
-            <ModalComponent title="Xóa sản phẩm" open={isModalOpenDelete} onCancel={handleCancelDelete} onOk={handleDeleteProduct}>
+            <ModalComponent forceRender title="Xóa sản phẩm" open={isModalOpenDelete} onCancel={handleCancelDelete} onOk={handleDeleteProduct}>
                 {/* <Loading isLoading={isLoadingDeleted}> */}
                 <div>Bạn có chắc muốn xóa sản phẩm này không?</div>
                 {/* </Loading> */}

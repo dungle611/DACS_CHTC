@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import TypeProduct from '../../components/TypeProduct/TypeProduct'
 import { WrapperTypeProduct, WrapperButtonMore, WrapperProduct } from './style'
 import SliderComponent from '../../components/SliderComponent/SliderComponent'
@@ -9,16 +9,28 @@ import CardComponent from '../../components/CardComponent/CardComponent'
 import * as ProductService from '../../services/ProductService'
 import { useQuery } from '@tanstack/react-query'
 import { retry } from '@reduxjs/toolkit/query'
+import { useSelector } from 'react-redux'
+import Loading from '../../components/LoadingComponent/Loading'
+import { useDebounce } from '../../hooks/useDebounce'
 
 const HomePage = () => {
+    const searchProduct = useSelector((state) => state?.product?.search)
+    const searchDebounce = useDebounce(searchProduct, 1000)
+    const refSearch = useRef()
+    const [stateProduct, setStateProduct] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [limit, setLimit] = useState(6)
     const arr = ['Meo', 'Cho']
-    const fetchProductAll = async () => {
-        const res = await ProductService.getAllProduct()
+    const fetchProductAll = async (context) => {
+        const limit = context?.queryKey && context?.queryKey[1]
+        const search = context?.queryKey && context?.queryKey[2]
+        const res = await ProductService.getAllProduct(search, limit)
         return res
     }
-    const {isLoading, data: products} = useQuery({queryKey: ['products'], queryFn: fetchProductAll, retry: 3, retryDelay: 1000})
+    const { isLoading, data: products, isPreviousData } = useQuery({queryKey: ['products', limit, searchDebounce], queryFn: fetchProductAll, retry: 3, retryDelay: 1000, keepPreviousData: true});
+
     return (
-        <>
+        <Loading isLoading={isLoading || loading}>
             <div style={{ width: '1270px', margin: '0 auto' }}>
                 <WrapperTypeProduct>
                     {arr.map((item) => {
@@ -45,19 +57,24 @@ const HomePage = () => {
                                     type={product.type}
                                     selled={product.selled}
                                     discount={product.discount}
+                                    id={product._id}
                                 />
                             )
                         })}
                     </WrapperProduct>
                     <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                        <WrapperButtonMore textButton="Xem thêm" type="outline" styleButton={{
-                            border: '1px solid rgb(11, 116, 229)', color: 'rgb(11, 116, 229)',
+                        <WrapperButtonMore textButton={isPreviousData ? 'Load more' : "Xem thêm"} type="outline" styleButton={{
+                            border: '1px solid rgb(11, 116, 229)', color: `${products?.total === products?.data?.length ? '#ccc' : 'rgb(11, 116, 229)'}`,
                             width: '240px', height: '38px', borderRadius: '4px'
-                        }} styleTextButton={{ fontWeight: 500, color: 'rgb(11, 116, 229)' }}></WrapperButtonMore>
+                        }} 
+                            disabled={products?.total === products?.data?.length || products?.totalPage === 1}
+                            styleTextButton={{ fontWeight: 500, color: products?.total === products?.data?.length && '#fff' }}
+                            onClick={() => setLimit((prev) => prev + 6)}
+                        ></WrapperButtonMore>
                     </div>
                 </div>
-            </div>           
-        </>
+            </div>        
+        </Loading>
     )
 }
 

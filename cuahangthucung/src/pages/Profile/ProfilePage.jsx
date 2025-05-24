@@ -43,8 +43,6 @@ const ProfilePage = () => {
 
     useEffect(() => {
         if(isSuccess) {
-            console.log("✅ Gọi API get-details với:", user?.id, user?.access_token)
-
             message.success()
             handleGetDetailsUser(user?.id, user?.access_token)
         }else if(isError) {

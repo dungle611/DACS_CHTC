@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import * as UserService from '../../services/UserService'
 import { resetUser } from '../../redux/slices/userSlice'
 import Loading from '../LoadingComponent/Loading'
+import { searchProduct } from '../../redux/slices/productSlice'
 
 const HeaderComponents = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const navigate = useNavigate()
@@ -15,6 +16,7 @@ const HeaderComponents = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const dispatch = useDispatch()
     const [userName, setUserName] = useState('')
     const [userAvatar, setUserAvatar] = useState('')
+    const [search, setSearch] = useState('')
     const [loading, setLoading] = useState(false)
     const handleNavigateLogin = () => {
         navigate('/sign-in')
@@ -38,18 +40,24 @@ const HeaderComponents = ({ isHiddenSearch = false, isHiddenCart = false }) => {
             <WrapperContentPopup onClick={handleLogout}>Đăng xuất</WrapperContentPopup>
         </div>
     )
+    const onSearch = (e) => {
+        setSearch(e.target.value)
+        dispatch(searchProduct(e.target.value))
+    }
     return (
         <div style={{ width: '100%', background: 'rgb(26, 148, 255', display: 'flex', justifyContent: 'center' }}>
             <WrapperHeader style={{justifyContent: isHiddenSearch && isHiddenSearch ? 'space-between' : 'unset'}}>
                 <Col span={5}>
-                    <WrapperTextHeader>PETHOME</WrapperTextHeader>
+                    <WrapperTextHeader style={{cursor: 'pointer'}} onClick={() => {navigate('/')}}>PETHOME</WrapperTextHeader>
                 </Col>
                 {!isHiddenSearch && (
                     <Col span={13}>
                         <ButtonInputSearch
                             size="large"
+                            bordered={false}
                             textButton="Tìm kiếm"
                             placeholder="Nhập sản phẩm cần tìm"
+                            onChange={onSearch}
                         />
                     </Col>
                 )}
