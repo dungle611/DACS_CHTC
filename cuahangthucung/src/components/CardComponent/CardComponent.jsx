@@ -19,7 +19,8 @@ const CardComponent = (props) => {
                 body: { padding: '10px' },
             }}
             cover= {<img alt="Sản phẩm" src={image} />} 
-            onClick={() => handleDetailsProduct(id)}
+            onClick={() => countInStock !== 0 && handleDetailsProduct(id)}
+            disabled = {countInStock === 0}
         >
             <StyleNameProduct>{name}</StyleNameProduct>
             <WrapperReportText>

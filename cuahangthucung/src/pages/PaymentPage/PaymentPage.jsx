@@ -1,7 +1,7 @@
-import { Checkbox, Form } from 'antd';
+import { Form, Radio } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import ButtonComponent from '../../components/ButtonComponent/ButtonComponent';
-import { WrapperCountOrder, WrapperInfo, WrapperItemOrder, WrapperLeft, WrapperListOrder, WrapperStyleHeader, WrapperTotal, WrapperRight } from './style';
+import { Lable, WrapperCountOrder, WrapperInfo, WrapperItemOrder, WrapperLeft, WrapperListOrder, WrapperStyleHeader, WrapperTotal, WrapperRight, WrapperRadio } from './style';
 import { useDispatch, useSelector } from 'react-redux';
 import { decreaseAmount, increaseAmount, removeAllOrderProduct, removeOrderProduct, selectedOrder } from '../../redux/slices/orderSlice';
 import { convertPrice } from '../../utils';
@@ -9,13 +9,18 @@ import ModalComponent from '../../components/ModalComponent/ModalComponent';
 import InputComponent from '../../components/InputComponent/InputComponent';
 import { useMutationHook } from '../../hooks/useMutationHook';
 import * as UserService from '../../services/UserService';
+import * as OrderService from '../../services/OrderService';
 import * as message from '../../components/Message/Message';
 import { updateUser } from '../../redux/slices/userSlice';
+import Loading from '../../components/LoadingComponent/Loading'
+
 
 const PaymentPage = () => {
     const order = useSelector((state) => state.order)
     const user = useSelector((state) => state.user)
     const [listChecked, setListChecked] = useState([])
+    const [delivery, setDelivery] = useState('fast')
+    const [payment, setPayment] = useState('later_money')
     const [isOpenModalUpdateInfo, setIsOpenModalUpdateInfo] = useState(false)
     const [stateUserDetails, setStateUserDetails] = useState({
             name: '',
@@ -57,7 +62,7 @@ const PaymentPage = () => {
         }
         return 0
     }, [order])
-    const diliveryPriceMemo = useMemo(() => {
+    const deliveryPriceMemo = useMemo(() => {
         if(priceMemo > 200000) {
             return 10000
         }else if(priceMemo === 0){
@@ -67,24 +72,33 @@ const PaymentPage = () => {
         }
     }, [priceMemo])
     const totalPriceMemo = useMemo(() => {
-        return Number(priceMemo) - Number(priceDiscountMemo) + Number(diliveryPriceMemo)
-    }, [priceMemo, priceDiscountMemo, diliveryPriceMemo])
-    const handleRemoveAllOrder = () => {
-        if(listChecked?.length > 1) {
-            dispatch(removeAllOrderProduct({listChecked}))
-        }
-    }
-    const handleAddCart = () => {
-        if(!order?.orderItemsSelected?.length) {
-            message.error('Vui lòng chọn sản phẩm')
-        }else if(!user?.phone || !user?.address || !user?.name || !user?.city) {
-            setIsOpenModalUpdateInfo(true)
+        return Number(priceMemo) - Number(priceDiscountMemo) + Number(deliveryPriceMemo)
+    }, [priceMemo, priceDiscountMemo, deliveryPriceMemo])
+    const handleAddOrder = () => {
+        if (user?.access_token && order?.orderItemsSelected && user?.name && user?.address
+            && user?.city && user?.phone && priceMemo && user?.id) {
+            mutationAddOrder.mutate({
+                token: user?.access_token, orderItems: order?.orderItemsSelected,
+                fullName: user?.name, address: user?.address, phone: user?.phone, city: user?.city,
+                paymentMethod: payment,
+                itemsPrice: priceMemo,
+                shippingPrice: deliveryPriceMemo,
+                totalPrice: totalPriceMemo,
+                user: user?.id
+            })
         }
     }
     const mutationUpdate = useMutationHook(
             (data) => {
                 const { id, token, ...rests } = data
                 const res = UserService.updateUser(id, { ...rests }, token)
+                return res
+            }
+        )
+    const mutationAddOrder = useMutationHook(
+            (data) => {
+                const { token, ...rests } = data
+                const res = OrderService.createOrder({ ...rests }, token)
                 return res
             }
         )
@@ -110,19 +124,50 @@ const PaymentPage = () => {
         }
     }
     const {isLoading, data} = mutationUpdate
+    const {data: dataAdd, isLoading: isLoadingAddOrder, isSuccess, isError} = mutationAddOrder
+    useEffect(() => {
+        if(isSuccess && dataAdd?.status === 'OK') {
+            message.success('Đặt hàng thành công')
+        }else if(isError) {
+            message.error()
+        }
+    }, [isSuccess, isError])
     const handleOnChangeDetails = (e) => {
         setStateUserDetails({
             ...stateUserDetails,
             [e.target.name]: e.target.value
         })
     }
+    const handleDelivery = (e) => {
+        setDelivery(e.target.value)
+    }
+    const handlePayment = (e) => {
+        setPayment(e.target.value)
+    }
     return (
         <div style={{ background: '#f5f5fa', width: '100%', height: '100vh' }}>
-            <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
+            {/* <Loading isLoading={isLoadingAddOrder}> */}
+                <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
                 <h3>Thanh toán</h3>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <WrapperLeft>
-                        
+                        <WrapperInfo>
+                            <div>
+                                <Lable>Chọn phương thức giao hàng</Lable>
+                                <WrapperRadio onChange={handleDelivery} value={delivery}>
+                                    <Radio value="fast"><span style={{color: '#ea8500', fontWeight: 'bold'}}>FAST</span>Giao hàng tiết kiệm</Radio>
+                                    <Radio value="grab"><span style={{color: '#ea8500', fontWeight: 'bold'}}>GRAB</span>Giao hàng tiết kiệm</Radio>
+                                </WrapperRadio>
+                            </div>
+                        </WrapperInfo>
+                        <WrapperInfo>
+                            <div>
+                                <Lable>Chọn phương thức thanh toán</Lable>
+                                <WrapperRadio onChange={handlePayment} value={payment}>
+                                    <Radio value="later_money">Thanh toán tiền mặt khi nhận hàng</Radio>
+                                </WrapperRadio>
+                            </div>
+                        </WrapperInfo>
                     </WrapperLeft>
 
                     <WrapperRight>
@@ -145,7 +190,7 @@ const PaymentPage = () => {
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <span>Phí giao hàng</span>
-                                    <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>{convertPrice(diliveryPriceMemo)}</span>
+                                    <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>{convertPrice(deliveryPriceMemo)}</span>
                                 </div>
                             </WrapperInfo>
 
@@ -159,7 +204,7 @@ const PaymentPage = () => {
                         </div>
 
                             <ButtonComponent
-                                onClick={() => handleAddCart()}
+                                onClick={() => handleAddOrder()}
                                 size="40"
                                 styleButton={{
                                     background: 'rgb(255, 57, 69)',
@@ -168,7 +213,7 @@ const PaymentPage = () => {
                                     border: 'none',
                                     borderRadius: '4px',
                                 }}
-                                textButton="Mua hàng"
+                                textButton="Đặt hàng"
                                 styleTextButton={{color: '#fff', fontSize: '15px', fontWeight: '700'}}
                             />
                     </WrapperRight>
@@ -215,6 +260,7 @@ const PaymentPage = () => {
                 </Form>
                 {/* </Loading> */}
             </ModalComponent>
+            {/* </Loading> */}
         </div>
     );
 };

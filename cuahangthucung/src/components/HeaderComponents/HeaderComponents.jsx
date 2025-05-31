@@ -39,6 +39,7 @@ const HeaderComponents = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                 <WrapperContentPopup onClick={() => navigate('/system/admin')}>Quản lý hệ thống</WrapperContentPopup>
             )}
             <WrapperContentPopup onClick={handleLogout}>Đăng xuất</WrapperContentPopup>
+            <WrapperContentPopup onClick={() => navigate('/my-order')}>Đơn hàng của tôi</WrapperContentPopup>
         </div>
     )
     const onSearch = (e) => {

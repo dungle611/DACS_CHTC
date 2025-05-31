@@ -5,8 +5,6 @@ const routes = require("./routes");
 const cors = require('cors');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const UserRouter = require('./routes/UserRouter');
-const ProductRouter = require('./routes/ProductRouter');
 
 dotenv.config()
 
@@ -18,8 +16,6 @@ app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb'}));
 app.use(bodyParser.json())
 app.use(cookieParser())
-app.use('/user', UserRouter)
-app.use('/product', ProductRouter)
 
 routes(app);
 

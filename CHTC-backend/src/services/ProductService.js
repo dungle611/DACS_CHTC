@@ -16,12 +16,13 @@ const createProduct = (newProduct) => {
             const newProduct = await Product.create({
                 name, 
                 image, 
-                type, 
+                type,
+                countInStock: Number(countInStock),
                 price, 
                 countInStock, 
                 rating, 
                 description,
-                discount
+                discount: Number(discount),
             })
             if(newProduct){
                 resolve({

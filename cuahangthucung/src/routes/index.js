@@ -15,6 +15,12 @@ export const routes = [
         page: HomePage,
         isShowHeader: true
     },
+    // {
+    //     path: '/my-order',
+    //     page: MyOrderPage,
+    //     isShowHeader: true
+
+    // },
     {
         path: '/order',
         page: OrderPage,
