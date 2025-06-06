@@ -34,9 +34,9 @@ const SignInPage = () => {
                 navigate('/')
             }
             localStorage.setItem('access_token', JSON.stringify(data?.access_token))
+            localStorage.setItem('refresh_token', JSON.stringify(data?.refresh_token))
             if(data?.access_token) {
                 const decoded = jwtDecode(data?.access_token)
-                console.log('decode', decoded)
                 if(decoded?.id) {
                     handleGetDetailsUser(decoded?.id, data?.access_token)
                 }
@@ -45,10 +45,11 @@ const SignInPage = () => {
     }, [isSuccess])
 
     const handleGetDetailsUser = async (id, token) => {
+        const storage = localStorage.getItem('refresh_token')
+        const refreshToken = JSON.parse(storage)
         const res = await UserService.getDetailsUser(id, token)
-        dispatch(updateUser({...res?.data, access_token: token}))
+        dispatch(updateUser({...res?.data, access_token: token, refreshToken}))
     }
-    console.log('mutation', mutation)
 
     const handleNavigateSignUp = () => {
         navigate('/sign-up')
@@ -107,8 +108,8 @@ const SignInPage = () => {
                                 borderRadius: '4px',
                                 margin: '26px 0 10px'
                             }}
-                            textButton={'Đăng nhập'}
-                            styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+                            textbutton={'Đăng nhập'}
+                            styletextbutton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     {/* </Loading> */}
                     <p><WrapperTextLight>Quên mật khẩu?</WrapperTextLight></p>
@@ -116,7 +117,7 @@ const SignInPage = () => {
                 </WrapperContainerLeft>
                 <WrapperContainerRight>
                     <Image src={imageLogo} preview={false} alt="image logo" height="203px" width="203px"/>
-                    <h4>Mua hàng tại CHTC</h4>
+                    <h4>Chào mừng đến với PETHOME</h4>
                 </WrapperContainerRight>
             </div>
         </div>

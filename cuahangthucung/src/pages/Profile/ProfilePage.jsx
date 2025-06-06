@@ -78,7 +78,7 @@ const ProfilePage = () => {
             {/* <Loading isLoading={isLoading}> */}
                 <WrapperContentProfile>
                     <WrapperInput>
-                        <WrapperLabel htmlFor="name">Name</WrapperLabel>
+                        <WrapperLabel htmlFor="name">Tên</WrapperLabel>
                         <InputForm style={{ width: '300px' }} id="name" value={name} onChange={handleOnChangeName} />
                         <ButtonComponent
                             onClick={handleUpdate}
@@ -89,8 +89,8 @@ const ProfilePage = () => {
                                 borderRadius: '4px',
                                 padding: '2px 6px 6px'
                             }}
-                            textButton={'Cập nhật'}
-                            styleTextButton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
+                            textbutton={'Cập nhật'}
+                            styletextbutton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     </WrapperInput>
                     <WrapperInput>
@@ -105,12 +105,12 @@ const ProfilePage = () => {
                                 borderRadius: '4px',
                                 padding: '2px 6px 6px'
                             }}
-                            textButton={'Cập nhật'}
-                            styleTextButton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
+                            textbutton={'Cập nhật'}
+                            styletextbutton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     </WrapperInput>
                     <WrapperInput>
-                        <WrapperLabel htmlFor="phone">Phone</WrapperLabel>
+                        <WrapperLabel htmlFor="phone">Số điện thoại</WrapperLabel>
                         <InputForm style={{ width: '300px' }} id="phone" value={phone} onChange={handleOnChangePhone} />
                         <ButtonComponent
                             onClick={handleUpdate}
@@ -121,12 +121,12 @@ const ProfilePage = () => {
                                 borderRadius: '4px',
                                 padding: '2px 6px 6px'
                             }}
-                            textButton={'Cập nhật'}
-                            styleTextButton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
+                            textbutton={'Cập nhật'}
+                            styletextbutton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     </WrapperInput>
                     <WrapperInput>
-                        <WrapperLabel htmlFor="address">Address</WrapperLabel>
+                        <WrapperLabel htmlFor="address">Địa chỉ</WrapperLabel>
                         <InputForm style={{ width: '300px' }} id="address" value={address} onChange={handleOnChangeAddress} />
                         <ButtonComponent
                             onClick={handleUpdate}
@@ -137,14 +137,14 @@ const ProfilePage = () => {
                                 borderRadius: '4px',
                                 padding: '2px 6px 6px'
                             }}
-                            textButton={'Cập nhật'}
-                            styleTextButton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
+                            textbutton={'Cập nhật'}
+                            styletextbutton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     </WrapperInput>
                     <WrapperInput>
-                        <WrapperLabel htmlFor="avatar">Avatar</WrapperLabel>
+                        <WrapperLabel htmlFor="avatar">Ảnh đại diện</WrapperLabel>
                         <WrapperUploadFile onChange={handleOnChangeAvatar} maxCount={1}>
-                            <Button icon={<UploadOutlined/>}>Select File</Button>
+                            <Button icon={<UploadOutlined/>}>Chọn tệp</Button>
                         </WrapperUploadFile>
                         {avatar && (
                             <img src={avatar} style={{
@@ -164,8 +164,8 @@ const ProfilePage = () => {
                                 borderRadius: '4px',
                                 padding: '2px 6px 6px'
                             }}
-                            textButton={'Cập nhật'}
-                            styleTextButton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
+                            textbutton={'Cập nhật'}
+                            styletextbutton={{ color: 'rgb(26, 148, 255)', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     </WrapperInput>
                 </WrapperContentProfile>

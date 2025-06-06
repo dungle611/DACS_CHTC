@@ -24,7 +24,6 @@ const NavbarComponent = () => {
                 )
             case 'star':
                 return options.map((option) => {
-                    console.log('check', option)
                     return (
                         <div style={{display: 'flex'}}>
                             <Rate style={{ fontSize: '12px' }} disabled defaultValue={option}></Rate>
@@ -35,7 +34,6 @@ const NavbarComponent = () => {
                 })
                 case 'price':
                     return options.map((option) => {
-                        console.log('check', option)
                         return (
                             <WrapperTextPrice>{option}</WrapperTextPrice>    
                         )
@@ -46,10 +44,9 @@ const NavbarComponent = () => {
     }
     return (
         <div>
-            <WrapperLabelText>Label</WrapperLabelText>
+            <WrapperLabelText>Danh mục sản phẩm</WrapperLabelText>
             <WrapperContent>
-                {renderContent('text', ['Thuc An', 'Thu Cung'])}
-
+                {renderContent('text', ['ĐỒ DÙNG CHO MÈO', 'ĐỒ DÙNG CHO CHÓ'])}
             </WrapperContent>
         </div>
     )

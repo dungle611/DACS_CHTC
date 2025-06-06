@@ -23,8 +23,8 @@ const refreshTokenJwtService = (token) => {
         try{
             jwt.verify(token, process.env.REFRESH_TOKEN, async (err, user) => {
                 if(err){
-                    console.log('err', err)
-                    resolve({
+                    // console.log('err', err)
+                    return resolve({
                         status: 'ERR',
                         message: 'The authemtication',
                     })
@@ -33,7 +33,7 @@ const refreshTokenJwtService = (token) => {
                     id: user?.id,
                     isAdmin: user?.isAdmin
                 })
-                resolve({
+                return resolve({
                     status: 'OK',
                     message: 'SUCCESS',
                     access_token

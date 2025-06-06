@@ -110,15 +110,15 @@ const SignUpPage = () => {
                                 borderRadius: '4px',
                                 margin: '26px 0 10px'
                             }}
-                            textButton={'Đăng Ký'}
-                            styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+                            textbutton={'Đăng Ký'}
+                            styletextbutton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     {/* </Loading> */}
                     <p>Bạn đã có tài khoản? <WrapperTextLight onClick={handleNavigateSignIn}>Đăng Nhập</WrapperTextLight></p>
                 </WrapperContainerLeft>
                 <WrapperContainerRight>
                     <Image src={imageLogo} preview={false} alt="image logo" height="203px" width="203px" />
-                    <h4>Mua hàng tại CHTC</h4>
+                    <h4>Chào mừng đến với PETHOME</h4>
                 </WrapperContainerRight>
             </div>
         </div>

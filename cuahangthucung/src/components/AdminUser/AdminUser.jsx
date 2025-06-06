@@ -187,7 +187,7 @@ const AdminUser = () => {
     })
     const columns = [
         {
-            title: 'Name',
+            title: 'Tên',
             dataIndex: 'name',
             sorter: (a, b) => a.name.length - b.name.length,
             ...getColumnSearchProps('name')
@@ -199,7 +199,7 @@ const AdminUser = () => {
             ...getColumnSearchProps('email')
         },
         {
-            title: 'Address',
+            title: 'Địa chỉ',
             dataIndex: 'address',
             sorter: (a, b) => a.address.length - b.address.length,
             ...getColumnSearchProps('address')
@@ -219,13 +219,13 @@ const AdminUser = () => {
             ],
         },
         {
-            title: 'Phone',
+            title: 'Số điện thoại',
             dataIndex: 'phone',
             sorter: (a, b) => a.phone - b.phone,
             ...getColumnSearchProps('phone')
         },
         {
-            title: 'Action',
+            title: 'Chức năng',
             dataIndex: 'action',
             render: renderAction
         }

@@ -1,4 +1,5 @@
 const Order = require("../models/OrderProduct")
+const Product = require("../models/ProductModel")
 
 const createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
@@ -12,12 +13,36 @@ const createOrder = (newOrder) => {
                     },
                     {$inc: {
                         countInStock: -order.amount,
-                        selled: +order.quality
+                        selled: +order.amount
                     }},
                     {new: true}
                 )
                 if(productData) {
-                    const createdOrder = await Order.create({
+                    return {
+                        status: 'OK',
+                        message: 'SUCCESS'
+                    }
+                }else {
+                    return{
+                        status: 'OK',
+                        message: 'ERR',
+                        id: order.product
+                    }
+                }
+            })
+            const results = await Promise.all(promises)
+            const newData = results && results.map((item) => item.id)
+            if(newData.length) {
+                const arrId = []
+                newData.forEach((item) => {
+                    arrId.push(item.id)
+                })
+                resolve({
+                    status: 'ERR',
+                    message: `Sản phẩm với id: ${arrId.join(',')} không đủ hàng`
+                })
+            }else {
+                const createdOrder = await Order.create({
                         orderItems,
                         shippingAddress: {
                             fullName,
@@ -37,32 +62,17 @@ const createOrder = (newOrder) => {
                             message: 'SUCCESS'
                         }
                     }
-                }else {
-                    return{
-                        status: 'OK',
-                        message: 'ERR',
-                        id: order.product
-                    }
-                }
-            })
-            const results = await Promise.all(promises)
-            const newData = results && results.filter((item) => item.data)
-            if(newData.length) {
-                resolve({
-                    status: 'ERR',
-                    message: `Sản phẩm với id${newData.join(',')} không đủ hàng`
-                })
-            } 
+            }
         }catch (e){
             reject(e)
-        }
+        } 
     })
 }
 
-const getDetailsOrder = (id) => {
+const getAllOrderDetails = (id) => {
     return new Promise(async (resolve, reject) => {
         try{
-            const order = await Order.findOne({
+            const order = await Order.find({
                 user: id
             })
             if(order === null){
@@ -83,7 +93,55 @@ const getDetailsOrder = (id) => {
     })
 }
 
+const getOrderDetails = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try{
+            const order = await Order.findById({
+                _id: id
+            })
+            if(order === null){
+                resolve({
+                    status: 'OK',
+                    message: 'The product is not defined'
+                })
+            }
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: order
+            })
+            
+        }catch (e){
+            reject(e)
+        }
+    })
+}
+
+const cancelOrderDetails = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try{
+            const order = await Order.findByIdAndDelete(id)
+            if(order === null){
+                resolve({
+                    status: 'ERR',
+                    message: 'The order is not defined'
+                })
+            }
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: order
+            })
+            
+        }catch (e){
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     createOrder,
-    getDetailsOrder
+    getAllOrderDetails,
+    getOrderDetails,
+    cancelOrderDetails
 }

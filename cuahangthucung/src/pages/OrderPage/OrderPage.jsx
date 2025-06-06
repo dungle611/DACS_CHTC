@@ -157,7 +157,7 @@ const OrderPage = () => {
     return (
         <div style={{ background: '#f5f5fa', width: '100%', height: '100vh' }}>
             <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
-                <h3>Giỏ hàng</h3>
+                <h2>Giỏ hàng</h2>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <WrapperLeft>
                         <WrapperStyleHeader>
@@ -176,7 +176,7 @@ const OrderPage = () => {
                         <WrapperListOrder>
                             {order?.orderItems?.map((order) => {
                                 return (
-                                    <WrapperItemOrder>
+                                    <WrapperItemOrder key={order?.product}>
                                         <div style={{ width: '390px', display: 'flex', alignItems: 'center' }}>
                                             <Checkbox onChange={onChange} value={order?.product} checked={listChecked.includes(order?.product)}/>
                                             <img src={order?.image} style={{ width: '77px', height: '79px', objectFit: 'cover' }} />
@@ -250,8 +250,8 @@ const OrderPage = () => {
                                     border: 'none',
                                     borderRadius: '4px',
                                 }}
-                                textButton="Mua hàng"
-                                styleTextButton={{color: '#fff', fontSize: '15px', fontWeight: '700'}}
+                                textbutton="Mua hàng"
+                                styletextbutton={{color: '#fff', fontSize: '15px', fontWeight: '700'}}
                             />
                     </WrapperRight>
                 </div>

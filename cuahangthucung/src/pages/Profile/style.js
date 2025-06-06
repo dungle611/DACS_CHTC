@@ -23,7 +23,7 @@ export const WrapperLabel = styled.label`
     font-size: 12px;
     line-height: 30px;
     font-weight: 600px;
-    width: 50px;
+    width: 90px;
     text-align: left;
 `
 

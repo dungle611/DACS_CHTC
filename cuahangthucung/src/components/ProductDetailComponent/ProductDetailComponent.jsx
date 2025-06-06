@@ -1,4 +1,4 @@
-import React, { use, useState } from 'react'
+import React, { use, useEffect, useMemo, useState } from 'react'
 import { Col, Row, Image, InputNumber, Rate } from 'antd'
 import imageProductSmall from '../../assets/images/alaka9_0.jpg'
 import { WrapperStyleImageSmall, WrapperStyleColImage, WrapperStyleNameProduct, WrapperStyleTextSell, WrapperPriceProduct, WrapperPriceTextProduct, WrapperAddressProduct, WrapperQualityProduct, WrapperInputNumber } from './style'
@@ -10,7 +10,9 @@ import Loading from '../LoadingComponent/Loading'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { addOrderProduct } from '../../redux/slices/orderSlice'
-import { convertPrice } from '../../utils'
+import { convertPrice, initFacebookSDK } from '../../utils'
+import LikeButtonComponent from '../LikeButtonComponent/LikeButtonComponent'
+import CommentComponent from '../CommentComponent/CommentComponent'
 
 const ProductDetailComponent = ({ idProduct }) => {
     const [numberProduct, setNumberProduct] = useState(1)
@@ -28,6 +30,9 @@ const ProductDetailComponent = ({ idProduct }) => {
             return res.data
         }
     }
+    useEffect(() => {
+        initFacebookSDK()
+    }, [])
     const handleChangeCount = (type) => {
         if(type === 'increase') {
             setNumberProduct(numberProduct + 1)
@@ -69,7 +74,7 @@ const ProductDetailComponent = ({ idProduct }) => {
                 <Col span={10} style={{ borderRight: '1px solid #e5e5e5', paddingRight: '8px' }}>
                     <Image src={productDetails?.image} alt="image product" preview={false}></Image>
                     <Row style={{ paddingTop: '10px', justifyContent: 'space-between' }}>
-                        <WrapperStyleColImage span={4}>
+                        {/* <WrapperStyleColImage span={4}>
                             <WrapperStyleImageSmall src={imageProductSmall} alt="image small" preview={false}></WrapperStyleImageSmall>
                         </WrapperStyleColImage>
                         <WrapperStyleColImage span={4}>
@@ -86,23 +91,24 @@ const ProductDetailComponent = ({ idProduct }) => {
                         </WrapperStyleColImage>
                         <WrapperStyleColImage span={4}>
                             <WrapperStyleImageSmall src={imageProductSmall} alt="image small" preview={false}></WrapperStyleImageSmall>
-                        </WrapperStyleColImage>
+                        </WrapperStyleColImage> */}
                     </Row>
                 </Col>
                 <Col span={14} style={{ paddingLeft: '10px' }}>
                     <WrapperStyleNameProduct>{productDetails?.name}</WrapperStyleNameProduct>
                     <div>
                         <Rate allowHalf defaultValue={productDetails?.rating} value={productDetails?.rating}/>
-                        <WrapperStyleTextSell> | Da ban 1000+</WrapperStyleTextSell>
+                        <WrapperStyleTextSell> | {productDetails?.selled || 0} lượt mua</WrapperStyleTextSell>
                     </div>
                     <WrapperPriceProduct>
                         <WrapperPriceTextProduct>{convertPrice(productDetails?.price)}</WrapperPriceTextProduct>
                     </WrapperPriceProduct>
                     <WrapperAddressProduct>
-                        <span>Giao đến </span>
-                        <span className='address'>{user?.address}</span> -
-                        <span className='change-address'> Đổi địa chỉ</span>
+                        <span>Giao đến: </span>
+                        <span className='address'>{user?.address}</span> 
+                        {/* <span className='change-address'> Đổi địa chỉ</span> */}
                     </WrapperAddressProduct>
+                    <LikeButtonComponent dataHref = {process.env.REACT_APP_IS_LOCAL ? "https://developers.facebook.com/docs/plugins/" : window.location.href}/>
                     <div style={{ margin: '10px 0 20px', padding: '10px 0', borderTop: '1px solid #e5e5e5', borderBottom: '1px solid #e5e5e5' }}>
                         <div style={{ marginBottom: '6px' }}>Số lượng</div>
                         <WrapperQualityProduct>
@@ -126,8 +132,8 @@ const ProductDetailComponent = ({ idProduct }) => {
                                 borderRadius: '4px'
                             }}
                             onClick={handleAddOrderProduct}
-                            textButton={'Chọn mua'}
-                            styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+                            textbutton={'Chọn mua'}
+                            styletextbutton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                         <ButtonComponent
                             size={40}
@@ -138,11 +144,12 @@ const ProductDetailComponent = ({ idProduct }) => {
                                 border: '1px solid rgb(13, 92, 182)',
                                 borderRadius: '4px'
                             }}
-                            textButton={'Mua trả sau'}
-                            styleTextButton={{ color: 'rgb(13, 92, 182)', fontSize: '15px' }}
+                            textbutton={'Mua trả sau'}
+                            styletextbutton={{ color: 'rgb(13, 92, 182)', fontSize: '15px' }}
                         ></ButtonComponent>
                     </div>
                 </Col>
+                <CommentComponent dataHref={process.env.REACT_APP_IS_LOCAL ? "https://developers.facebook.com/docs/plugins/comments#configurator" : window.location.href} width="1270"/>
             </Row>
         </Loading>
     )

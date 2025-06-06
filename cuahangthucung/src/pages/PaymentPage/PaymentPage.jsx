@@ -148,7 +148,7 @@ const PaymentPage = () => {
         <div style={{ background: '#f5f5fa', width: '100%', height: '100vh' }}>
             {/* <Loading isLoading={isLoadingAddOrder}> */}
                 <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
-                <h3>Thanh toán</h3>
+                <h2>Thanh toán</h2>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <WrapperLeft>
                         <WrapperInfo>
@@ -213,8 +213,8 @@ const PaymentPage = () => {
                                     border: 'none',
                                     borderRadius: '4px',
                                 }}
-                                textButton="Đặt hàng"
-                                styleTextButton={{color: '#fff', fontSize: '15px', fontWeight: '700'}}
+                                textbutton="Đặt hàng"
+                                styletextbutton={{color: '#fff', fontSize: '15px', fontWeight: '700'}}
                             />
                     </WrapperRight>
                 </div>

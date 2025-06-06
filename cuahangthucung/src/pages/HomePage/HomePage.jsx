@@ -76,12 +76,12 @@ const HomePage = () => {
                         })}
                     </WrapperProduct>
                     <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                        <WrapperButtonMore textButton={isPreviousData ? 'Load more' : "Xem thêm"} type="outline" styleButton={{
+                        <WrapperButtonMore textbutton={isPreviousData ? 'Load more' : "Xem thêm"} type="outline" styleButton={{
                             border: '1px solid rgb(11, 116, 229)', color: `${products?.total === products?.data?.length ? '#ccc' : 'rgb(11, 116, 229)'}`,
                             width: '240px', height: '38px', borderRadius: '4px'
                         }} 
                             disabled={products?.total === products?.data?.length || products?.totalPage === 1}
-                            styleTextButton={{ fontWeight: 500, color: products?.total === products?.data?.length && '#fff' }}
+                            styletextbutton={{ fontWeight: 500, color: products?.total === products?.data?.length && '#fff' }}
                             onClick={() => setLimit((prev) => prev + 6)}
                         ></WrapperButtonMore>
                     </div>
