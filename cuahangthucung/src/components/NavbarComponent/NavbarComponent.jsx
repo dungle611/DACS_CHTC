@@ -45,9 +45,9 @@ const NavbarComponent = () => {
     return (
         <div>
             <WrapperLabelText>Danh mục sản phẩm</WrapperLabelText>
-            <WrapperContent>
+            {/* <WrapperContent>
                 {renderContent('text', ['ĐỒ DÙNG CHO MÈO', 'ĐỒ DÙNG CHO CHÓ'])}
-            </WrapperContent>
+            </WrapperContent> */}
         </div>
     )
 }
