@@ -115,6 +115,18 @@ const deleteMany = async (req, res) => {
     }
 }
 
+const suggestMedicine = async (req, res) => {
+    try {
+        const { petType, symptom, age, petName } = req.query;
+        const response = await ProductService.suggestMedicine(petType, symptom, age, petName);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        });
+    }
+};
+
 module.exports = {
     createProduct,
     updateProduct,
@@ -122,5 +134,6 @@ module.exports = {
     deleteProduct,
     getAllProduct,
     deleteMany,
-    getAllType
+    getAllType,
+    suggestMedicine
 }

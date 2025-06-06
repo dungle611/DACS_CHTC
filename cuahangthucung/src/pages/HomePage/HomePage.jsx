@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TypeProduct from '../../components/TypeProduct/TypeProduct'
 import { WrapperTypeProduct, WrapperButtonMore, WrapperProduct } from './style'
 import SliderComponent from '../../components/SliderComponent/SliderComponent'
@@ -12,6 +12,8 @@ import { retry } from '@reduxjs/toolkit/query'
 import { useSelector } from 'react-redux'
 import Loading from '../../components/LoadingComponent/Loading'
 import { useDebounce } from '../../hooks/useDebounce'
+import { suggestMedicine } from '../../services/ProductService'
+import { useNavigate } from 'react-router-dom'
 
 const HomePage = () => {
     const searchProduct = useSelector((state) => state?.product?.search)
@@ -19,6 +21,8 @@ const HomePage = () => {
     const [typeProduct, setTypeProduct] = useState([])
     const [loading, setLoading] = useState(false)
     const [limit, setLimit] = useState(6)
+    const navigate = useNavigate()
+
     const fetchProductAll = async (context) => {
         const limit = context?.queryKey && context?.queryKey[1]
         const search = context?.queryKey && context?.queryKey[2]
@@ -37,6 +41,7 @@ const HomePage = () => {
     useEffect(() => {   
         fetchAllTypeProduct()
     }, [])
+
     return (
         <Loading isLoading={isLoading || loading}>
             <div style={{ width: '1270px', margin: '0 auto' }}>

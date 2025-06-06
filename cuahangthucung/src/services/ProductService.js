@@ -59,3 +59,14 @@ export const getAllTypeProduct = async () => {
     const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/get-all-type`)
     return res.data
 }
+
+export const suggestMedicine = async (petType, symptom, age, petName) => {
+    // Gửi các tham số lên backend, có thể truyền qua query hoặc body (dùng GET cho đơn giản)
+    const params = new URLSearchParams();
+    if (petType) params.append('petType', petType);
+    if (symptom) params.append('symptom', symptom);
+    if (age) params.append('age', age);
+    if (petName) params.append('petName', petName);
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/suggest-medicine?${params.toString()}`);
+    return res.data;
+}

@@ -189,7 +189,70 @@ const getAllType = (limit, page, sort, filter) => {
     })
 }
 
-
+// Gợi ý thuốc cho chó, mèo
+const suggestMedicine = (petType, symptom, age, petName) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let query = {};
+            // Nâng cao: mapping triệu chứng sang nhiều từ khoá liên quan
+            const symptomKeywords = {
+                'nôn mửa': ['nôn', 'ói', 'mửa'],
+                'tiêu chảy': ['tiêu chảy', 'phân lỏng'],
+                'ngứa': ['ngứa', 'gãi', 'dị ứng'],
+                'rụng lông': ['rụng lông', 'lông rụng'],
+                'ký sinh trùng': ['giun', 'sán', 'bọ chét', 've', 'ký sinh'],
+                'khó thở': ['khó thở', 'thở gấp'],
+                'khác': []
+            };
+            let symptomRegex = [];
+            if (symptom && symptomKeywords[symptom]) {
+                symptomRegex = symptomKeywords[symptom].map(k => ({ description: { $regex: k, $options: 'i' } }));
+            }
+            if ((petType === 'dog' || petType === 'chó') && symptomRegex.length > 0) {
+                query = {
+                    $and: [
+                        { $or: [
+                            { type: /thuoc-cho/i },
+                            { description: /chó|dog|thuốc cho chó/i }
+                        ] },
+                        { $or: symptomRegex }
+                    ]
+                };
+            } else if ((petType === 'cat' || petType === 'mèo') && symptomRegex.length > 0) {
+                query = {
+                    $and: [
+                        { $or: [
+                            { type: /thuoc-meo/i },
+                            { description: /mèo|cat|thuốc cho mèo/i }
+                        ] },
+                        { $or: symptomRegex }
+                    ]
+                };
+            } else if (petType === 'dog' || petType === 'chó') {
+                query = { $or: [
+                    { type: /thuoc-cho/i },
+                    { description: /chó|dog|thuốc cho chó/i }
+                ] };
+            } else if (petType === 'cat' || petType === 'mèo') {
+                query = { $or: [
+                    { type: /thuoc-meo/i },
+                    { description: /mèo|cat|thuốc cho mèo/i }
+                ] };
+            } else {
+                resolve({ status: 'ERR', message: 'Loại thú cưng không hợp lệ' });
+                return;
+            }
+            const medicines = await Product.find(query);
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: medicines
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 
 module.exports = {
     createProduct,
@@ -198,5 +261,6 @@ module.exports = {
     deleteProduct,
     getAllProduct,
     deleteManyProduct,
-    getAllType
+    getAllType,
+    suggestMedicine
 }
